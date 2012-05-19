@@ -1,4 +1,5 @@
 from symbols import *
+from ast import *
 
 """
 
@@ -13,6 +14,7 @@ from symbols import *
 class Parser(object):
 
     def parse(self, tokens):
+        self.ast = []
         for token in tokens:
             self.current_line = token
             self.current_pos = 0
@@ -22,7 +24,7 @@ class Parser(object):
                 print 'Error "%s" on line %s' % (ex, str(token))
                 print 'On token %s' % str(token[self.current_pos])
                 return
-                
+        return self.ast
     
     def accept(self, symbol):
         if self.current_pos < len(self.current_line) and self.current_line[self.current_pos][0] == symbol:
@@ -36,52 +38,66 @@ class Parser(object):
             return True
         else:
             raise Exception('Excepted Symbol')
+        
+    def get_value(self):
+        return self.current_line[self.current_pos-1][1]
     
     def line(self):
         if self.accept(PRINT_KEYWORD):
-            self.print_call()
+            self.ast.append(self.print_call())
         elif self.accept(INPUT_KEYWORD):
-            self.input_call()
+            self.ast.append(self.input_call())
         elif self.accept(VAR_KEYWORD):
-            self.var_defintion()
+            self.ast.append(self.var_defintion())
         elif self.accept(IDENTIFIER):
-            self.assigment()
+            self.ast.append(self.assigment())
         else:
             raise Exception('Error parsing line')
     
     def var_defintion(self):
         self.expect(IDENTIFIER)
-        
+        vd = VarDefinition()
+        vd.identifier = Identifier(self.get_value())
         if self.accept(EQUALS):
-            self.term()
-            print 'Variable definition with initialisation'
-        else:
-            print 'Variable definition without initialisation'
+            vd.term = self.term()
+        return vd
     
     def print_call(self):
-        print 'print call'
-        self.term()
+        p = Print()
+        p.term = self.term()
+        return p
         
     def input_call(self):
-        print 'input call'
         self.expect(IDENTIFIER)
+        i = Input()
+        i.identifier = Identifier(self.get_value())
+        return i
     
-    def assigment(self):
+    def assignment(self):
+        a = Assignment()
+        a.identifier = Identifier(self.get_value())
         self.expect(EQUALS)
-        self.term()
-    
+        a.term = self.term()
+        return a
+        
     # general term returning value, ex: 5 + 4, a + b + 3
     def term(self):
-        self.factor()
+        factor1 = self.factor()
+        t = None
         if self.accept(PLUS):
-            print 'PLUS'
-            self.term()
+            t = Plus()
+            t.factor1 = factor1
+            t.factor2 = self.term()
+        else:
+            t = Term()
+            t.factor1 = factor1
+        return t
     
     def factor(self):
         if self.accept(VALUE):
-            print 'Factor is number'
+            return Constant(self.get_value())
         elif self.accept(IDENTIFIER):
-            print 'Factor is identifier'
+            return Identifier(self.get_value())
         else:
             raise Exception('Error: bad factor')
     

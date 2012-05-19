@@ -10,4 +10,7 @@ f.close()
 tokens = tokenize(code)
 
 parser = Parser()
-parser.parse(tokens)
+ast = parser.parse(tokens)
+
+for a in ast:
+    print a
