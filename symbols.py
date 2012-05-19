@@ -1,0 +1,17 @@
+VAR_KEYWORD = 1
+PRINT_KEYWORD = 2
+INPUT_KEYWORD = 3
+VALUE = 4
+IDENTIFIER = 5
+EQUALS = 6
+PLUS = 7
+
+TOKENS = {
+    1: 'VAR_KEYWORD',
+    2: 'PRINT_KEYWORD',
+    3: 'INPUT',
+    4: 'VALUE',
+    5: 'IDENTIFIER',
+    6: 'EQUALS',
+    7: 'PLUS',
+}

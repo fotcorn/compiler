@@ -1,0 +1,4 @@
+var a
+input a
+var b = 5
+print a + b + 5
