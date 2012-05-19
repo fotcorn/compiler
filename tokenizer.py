@@ -51,6 +51,9 @@ class Tokenizer(object):
             elif char == ')':
                 self.close_literal()
                 self.current_line.append((RPAREN,))
+            elif char == '#':
+                self.close_literal()
+                return
         self.close_literal()
             
     
