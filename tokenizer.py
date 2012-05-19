@@ -1,36 +1,73 @@
 import re
+from symbols import *
 
-TOKEN_REGEX = {
-    1: 'var',
-    2: 'print',
-    3: 'input',
-    4: '\d+',
-    5: '[[A-Za-z]+',
-    6: '=',
-    7: '\\+',
-}
 
-def tokenize(string):
-    tokens = []
-    for line in string.split('\n'):
-        if len(line.strip()) == 0:
-            continue
-        
-        current_line = []
-        
-        for token in re.split('\s+', line):
-            if len(token) == 0:
+STATE_IDENTIFIER = 1
+STATE_DIGIT = 2
+
+class Tokenizer(object):
+    def tokenize(self, string):
+        tokens = []
+        for line in string.split('\n'):
+            line = line.strip()
+            if len(line) == 0:
                 continue
             
-            found = False
-            for token_id, regex in TOKEN_REGEX.items():
-                if re.match(regex, token):
-                    current_line.append((token_id, token))
-                    found = True
-                    break
-            if found == False:
-                raise Exception('Unknown token %s', token)
+            self.current_line = []
+            self.parse_line(line)
+            tokens.append(self.current_line)
+        return tokens
     
-        tokens.append(current_line)
-    return tokens
+    def parse_line(self, line):
+        self.state = None
+        self.current_literal = ''
+        for char in line:
+            if re.match(r'\s', char):
+                self.close_literal()
+            elif re.match(r'[A-Za-z]', char):
+                self.state = STATE_IDENTIFIER
+                self.current_literal += char
+            elif re.match(r'\d', char):
+                self.state = STATE_DIGIT
+                self.current_literal += char
+            elif char == '=':
+                self.close_literal()
+                self.current_line.append((EQUALS,))
+            elif char == '+':
+                self.close_literal()
+                self.current_line.append((PLUS,))
+            elif char == '-':
+                self.close_literal()
+                self.current_line.append((MINUS,))
+            elif char == '*':
+                self.close_literal()
+                self.current_line.append((STAR,))
+            elif char == '/':
+                self.close_literal()
+                self.current_line.append((SLASH,))
+            elif char == '(':
+                self.close_literal()
+                self.current_line.append((LPAREN,))
+            elif char == ')':
+                self.close_literal()
+                self.current_line.append((RPAREN,))
+        self.close_literal()
+            
+    
+    def close_literal(self):
+        if self.state == STATE_IDENTIFIER:
+            if self.current_literal == 'print':
+                self.current_line.append((PRINT_KEYWORD,))
+            elif self.current_literal == 'var':
+                self.current_line.append((VAR_KEYWORD,))
+            elif self.current_literal == 'input':
+                self.current_line.append((INPUT_KEYWORD,))
+            else:
+                self.current_line.append((IDENTIFIER, self.current_literal))
+            self.current_literal = ''
+            self.state = None
+        elif self.state == STATE_DIGIT:
+            self.current_line.append((VALUE, self.current_literal))
+            self.current_literal = ''
+            self.state = None
 

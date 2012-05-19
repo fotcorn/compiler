@@ -3,8 +3,15 @@ PRINT_KEYWORD = 2
 INPUT_KEYWORD = 3
 VALUE = 4
 IDENTIFIER = 5
+
 EQUALS = 6
 PLUS = 7
+MINUS = 8
+STAR = 9
+SLASH = 10
+
+LPAREN = 11
+RPAREN = 12
 
 TOKENS = {
     1: 'VAR_KEYWORD',
@@ -14,4 +21,9 @@ TOKENS = {
     5: 'IDENTIFIER',
     6: 'EQUALS',
     7: 'PLUS',
+    8: 'MINUS',
+    9: 'STAR',
+    10: 'SLASH',
+    11: 'LPAREN',
+    12: 'RPAREN',
 }
