@@ -1,6 +1,11 @@
+var a = 5 + 3*5
+
 var a
 input a
 var b = 5
+
+a = 7
+
 print a + b + 5
 
 # line comment

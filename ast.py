@@ -9,6 +9,9 @@ class ASTNode(object):
                 ret += name + '=' + str(value) + ', '
         ret = ret[:-2] + '>'
         return ret
+    def __repr__(self):
+        return self.__str__()
+        
 
 class Print(ASTNode): pass
 class Input(ASTNode): pass
@@ -24,6 +27,11 @@ class Identifier(ASTNode):
     def __init__(self, identifier):
         self.identifier = identifier
         
-class Term(ASTNode): pass
+class Term(ASTNode):
+    def __init__(self):
+        self.factors = []
+        
+class Expression(ASTNode):
+    def __init__(self):
+        self.terms = []
 
-class Plus(Term): pass

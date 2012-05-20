@@ -15,7 +15,8 @@ class Tokenizer(object):
             
             self.current_line = []
             self.parse_line(line)
-            tokens.append(self.current_line)
+            if len(self.current_line) > 0:
+                tokens.append(self.current_line)
         return tokens
     
     def parse_line(self, line):

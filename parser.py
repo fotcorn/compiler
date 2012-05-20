@@ -21,9 +21,10 @@ class Parser(object):
             try:
                 self.line()
             except Exception, ex:
+                import traceback
+                traceback.print_exc()
                 print 'Error "%s" on line %s' % (ex, str(token))
                 print 'On token %s' % str(token[self.current_pos])
-                return
         return self.ast
     
     def accept(self, symbol):
@@ -42,6 +43,14 @@ class Parser(object):
     def get_value(self):
         return self.current_line[self.current_pos-1][1]
     
+    def get_symbol(self):
+        if self.current_pos >= len(self.current_line):
+            return None
+        return self.current_line[self.current_pos][0]
+    
+    def next_symbol(self):
+        self.current_pos += 1
+    
     def line(self):
         if self.accept(PRINT_KEYWORD):
             self.ast.append(self.print_call())
@@ -50,7 +59,7 @@ class Parser(object):
         elif self.accept(VAR_KEYWORD):
             self.ast.append(self.var_defintion())
         elif self.accept(IDENTIFIER):
-            self.ast.append(self.assigment())
+            self.ast.append(self.assignment())
         else:
             raise Exception('Error parsing line')
     
@@ -59,12 +68,12 @@ class Parser(object):
         vd = VarDefinition()
         vd.identifier = Identifier(self.get_value())
         if self.accept(EQUALS):
-            vd.term = self.term()
+            vd.expression = self.expression()
         return vd
     
     def print_call(self):
         p = Print()
-        p.term = self.term()
+        p.expression = self.expression()
         return p
         
     def input_call(self):
@@ -77,27 +86,64 @@ class Parser(object):
         a = Assignment()
         a.identifier = Identifier(self.get_value())
         self.expect(EQUALS)
-        a.term = self.term()
+        a.expression = self.expression()
         return a
         
-    # general term returning value, ex: 5 + 4, a + b + 3
+    def expression(self):
+        exp = Expression()
+        sign = '+'
+        if self.get_symbol() == PLUS:
+            self.next_symbol()
+        elif self.get_symbol() == MINUS:
+            sign = '-'
+            self.next_symbol()
+        
+        term = self.term()
+        term.sign = sign
+        
+        exp.terms.append(term)
+        
+        while True:
+            if self.get_symbol() == PLUS:
+                sign = '+'
+            elif self.get_symbol == MINUS:
+                sign = '-'
+            else:
+                break
+
+            self.next_symbol()
+            term = self.term()
+            term.sign = sign
+            exp.terms.append(term)
+        return exp
+    
     def term(self):
-        factor1 = self.factor()
-        t = None
-        if self.accept(PLUS):
-            t = Plus()
-            t.factor1 = factor1
-            t.factor2 = self.term()
-        else:
-            t = Term()
-            t.factor1 = factor1
-        return t
+        term = Term()
+        factor = self.factor()
+        term.factors.append(factor)
+        
+        while True:
+            if self.get_symbol() == STAR:
+                sign = '*'
+            elif self.get_symbol() == SLASH:
+                sign = '/'
+            else:
+                break
+            self.next_symbol()
+            factor = self.factor()
+            factor.sign = sign
+            term.factors.append(factor)
+        return term
     
     def factor(self):
         if self.accept(VALUE):
             return Constant(self.get_value())
         elif self.accept(IDENTIFIER):
             return Identifier(self.get_value())
+        elif self.accept(LPAREN):
+            exp = self.expression()
+            self.expect(RPAREN)
+            return exp
         else:
             raise Exception('Error: bad factor')
-    
+
