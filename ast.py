@@ -15,7 +15,6 @@ class ASTNode(object):
 
 class Print(ASTNode): pass
 class Input(ASTNode): pass
-
 class VarDefinition(ASTNode): pass
 class Assignment(ASTNode): pass
 
