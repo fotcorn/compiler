@@ -10,13 +10,13 @@ f.close()
 tokenizer = Tokenizer()
 tokens = tokenizer.tokenize(code)
 
-"""
+
 for line in tokens:
     for token in line:
         print TOKENS[token[0]]
     print
-"""
 
+exit()
 parser = Parser()
 ast = parser.parse(tokens)
 

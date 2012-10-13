@@ -1,15 +1,16 @@
-# var x = -1
-# print x
 
-# input a
-# input b
 
-# print a + b
 
-# line comment
-print 5 + 5 * 5
-print (5+5)*5
-print 5+(5*5)   # parents test
+var i = 1
+var x = 1
+var y = 1
+var tmp = 0
 
-if a == 5:
-    test
+
+while i < a
+    i = i + 1
+    
+    tmp = y
+	y = x + y
+	x = tmp
+endwhile
