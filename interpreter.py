@@ -20,7 +20,7 @@ class Interpreter():
                 self.vars[identifier] = value
             elif isinstance(instr, Assignment):
                 identifier = instr.identifier.identifier
-                if not identifier in vars.keys():
+                if not identifier in self.vars.keys():
                     raise Exception('Undefined variable %s' % identifier)
                 value = self.expression(instr.expression)
                 self.vars[identifier] = value
