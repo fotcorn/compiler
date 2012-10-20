@@ -11,19 +11,24 @@ tokenizer = Tokenizer()
 tokens = tokenizer.tokenize(code)
 
 
-for line in tokens:
-    for token in line:
-        print TOKENS[token[0]]
-    print
+#for line in tokens:
+#    for token in line:
+#        print TOKENS[token[0]]
+#    print
 
-exit()
+
+if 5+3*3 > 23:
+    pass
+
+
 parser = Parser()
 ast = parser.parse(tokens)
 
-"""
+
 for a in ast:
     print a
-"""
- 
+
+exit()
+
 interpreter = Interpreter()
 interpreter.interpret(ast)

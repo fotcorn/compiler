@@ -1,16 +1,6 @@
+var i = 0
 
-
-
-var i = 1
-var x = 1
-var y = 1
-var tmp = 0
-
-
-while i < a
+while i < 10
     i = i + 1
-    
-    tmp = y
-	y = x + y
-	x = tmp
+    print i
 endwhile

@@ -17,6 +17,10 @@ class Print(ASTNode): pass
 class Input(ASTNode): pass
 class VarDefinition(ASTNode): pass
 class Assignment(ASTNode): pass
+class WhileStart(ASTNode): pass
+class WhileEnd(ASTNode): pass
+class IfStart(ASTNode): pass
+class IfEnd(ASTNode): pass
 
 class Constant(ASTNode):
     def __init__(self, constant):
