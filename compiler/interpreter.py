@@ -1,4 +1,5 @@
-from ast import *
+from compiler.ast import VarDefinition, Identifier, Assignment, Input, Print,\
+    Constant, Expression
 
 
 class Interpreter():

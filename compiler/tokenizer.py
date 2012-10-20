@@ -1,5 +1,7 @@
 import re
-from symbols import *
+
+from compiler.symbols import EQUALS, PLUS, MINUS, STAR, SLASH, LPAREN, RPAREN,\
+    PRINT_KEYWORD, VAR_KEYWORD, INPUT_KEYWORD, IDENTIFIER, VALUE
 
 
 STATE_IDENTIFIER = 1

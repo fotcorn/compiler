@@ -1,6 +1,3 @@
-from symbols import *
-from ast import *
-
 """
 
 [(1, 'var'), (4, 'a'), (5, '='), (3, '5')]
@@ -10,6 +7,10 @@ from ast import *
 [(2, 'print'), (4, 'a')]
 
 """
+from compiler.symbols import PRINT_KEYWORD, INPUT_KEYWORD, VAR_KEYWORD,\
+    IDENTIFIER, EQUALS, PLUS, MINUS, STAR, SLASH, VALUE, LPAREN, RPAREN
+from compiler.ast import VarDefinition, Identifier, Print, Input, Assignment,\
+    Expression, Term, Constant
 
 class Parser(object):
 

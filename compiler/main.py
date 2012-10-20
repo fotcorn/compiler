@@ -1,9 +1,8 @@
-from tokenizer import Tokenizer
-from parser import Parser
-from symbols import TOKENS
-from interpreter import Interpreter
+from compiler.tokenizer import Tokenizer
+from compiler.parser import Parser
+from compiler.interpreter import Interpreter
 
-f = open('examples/vars', 'r')
+f = open('../examples/vars', 'r')
 code = f.read()
 f.close()
 
