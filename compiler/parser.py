@@ -11,6 +11,9 @@ from compiler.symbols import PRINT_KEYWORD, INPUT_KEYWORD, VAR_KEYWORD,\
     IDENTIFIER, EQUALS, PLUS, MINUS, STAR, SLASH, VALUE, LPAREN, RPAREN
 from compiler.ast import VarDefinition, Identifier, Print, Input, Assignment,\
     Expression, Term, Constant
+    
+
+class ParseError(Exception): pass
 
 class Parser(object):
 
@@ -19,13 +22,7 @@ class Parser(object):
         for token in tokens:
             self.current_line = token
             self.current_pos = 0
-            try:
-                self.line()
-            except Exception, ex:
-                import traceback
-                traceback.print_exc()
-                print 'Error "%s" on line %s' % (ex, str(token))
-                print 'On token %s' % str(token[self.current_pos])
+            self.line()
         return self.ast
     
     def accept(self, symbol):
@@ -39,7 +36,7 @@ class Parser(object):
         if self.accept(symbol):
             return True
         else:
-            raise Exception('Excepted Symbol')
+            raise ParseError('Excepted Symbol')
         
     def get_value(self):
         return self.current_line[self.current_pos-1][1]
@@ -62,7 +59,7 @@ class Parser(object):
         elif self.accept(IDENTIFIER):
             self.ast.append(self.assignment())
         else:
-            raise Exception('Error parsing line')
+            raise ParseError('Error parsing line')
     
     def var_defintion(self):
         self.expect(IDENTIFIER)
@@ -146,5 +143,5 @@ class Parser(object):
             self.expect(RPAREN)
             return exp
         else:
-            raise Exception('Error: bad factor')
+            raise ParseError('Error: bad factor')
 
