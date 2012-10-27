@@ -60,6 +60,9 @@ class Parser(object):
             self.ast.append(self.assignment())
         else:
             raise ParseError('Error parsing line')
+        
+        if len(self.current_line) != self.current_pos:
+            raise ParseError('Not all tokens parsed')
     
     def var_defintion(self):
         self.expect(IDENTIFIER)
@@ -104,7 +107,7 @@ class Parser(object):
         while True:
             if self.get_symbol() == PLUS:
                 sign = '+'
-            elif self.get_symbol == MINUS:
+            elif self.get_symbol() == MINUS:
                 sign = '-'
             else:
                 break

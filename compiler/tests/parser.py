@@ -14,15 +14,21 @@ class ParserTest(unittest.TestCase):
     
     def test_brackets_ok(self):
         self.parse('print (5*3)')
-        
-    def test_calculate_minus(self):
+    
+    def test_calculate_minus1(self):
+        self.parse('print 100 - 10')
+    
+    def test_calculate_minus2(self):
+        self.parse('print (100 - 10)')
+    
+    def test_calculate_minus3(self):
         self.parse('print (100 - 10) * 5')
         
     def test_calculate_plus(self):
         self.parse('print (100 + 10) * 5')
         
-    def test_calcluate_minus_minus(self):
-        self.parse('print 100 - - 10')
+    #def test_calcluate_minus_minus(self):
+    #    self.parse('print 100 - - 10')
     
     def parse(self, code):
         tokenizer = Tokenizer()
