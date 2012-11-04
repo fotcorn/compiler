@@ -1,7 +1,8 @@
 import re
 
 from compiler.symbols import EQUALS, PLUS, MINUS, STAR, SLASH, LPAREN, RPAREN,\
-    PRINT_KEYWORD, VAR_KEYWORD, INPUT_KEYWORD, IDENTIFIER, VALUE
+    PRINT_KEYWORD, VAR_KEYWORD, INPUT_KEYWORD, IDENTIFIER, VALUE, WHILE_KEYWORD,\
+    ENDWHILE_KEYWORD, IF_KEYWORD, ENDIF_KEYWORD, LESS_THAN, GREATER_THAN
 
 
 STATE_IDENTIFIER = 1
@@ -25,7 +26,7 @@ class Tokenizer(object):
         self.state = None
         self.current_literal = ''
         for char in line:
-            if re.match(r'\s', char):
+            if re.match(r'\s', char): # spaces, tabs etc.
                 self.close_literal()
             elif re.match(r'[A-Za-z]', char):
                 self.state = STATE_IDENTIFIER
@@ -54,9 +55,18 @@ class Tokenizer(object):
             elif char == ')':
                 self.close_literal()
                 self.current_line.append((RPAREN,))
-            elif char == '#':
+            elif char == '<':
+                self.close_literal()
+                self.current_line.append((LESS_THAN,))
+            elif char == '>':
+                self.close_literal()
+                self.current_line.append((GREATER_THAN,))
+            elif char == '#': # rest of the line is comment
                 self.close_literal()
                 return
+            else:
+                raise Exception('parse error: %s' % line)
+                
         self.close_literal()
             
     
@@ -68,6 +78,14 @@ class Tokenizer(object):
                 self.current_line.append((VAR_KEYWORD,))
             elif self.current_literal == 'input':
                 self.current_line.append((INPUT_KEYWORD,))
+            elif self.current_literal == 'while':
+                self.current_line.append((WHILE_KEYWORD,))
+            elif self.current_literal == 'endwhile':
+                self.current_line.append((ENDWHILE_KEYWORD,))
+            elif self.current_literal == 'if':
+                self.current_line.append((IF_KEYWORD,))
+            elif self.current_literal == 'endif':
+                self.current_line.append((ENDIF_KEYWORD,))
             else:
                 self.current_line.append((IDENTIFIER, self.current_literal))
             self.current_literal = ''

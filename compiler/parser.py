@@ -8,9 +8,11 @@
 
 """
 from compiler.symbols import PRINT_KEYWORD, INPUT_KEYWORD, VAR_KEYWORD,\
-    IDENTIFIER, EQUALS, PLUS, MINUS, STAR, SLASH, VALUE, LPAREN, RPAREN
+    IDENTIFIER, EQUALS, PLUS, MINUS, STAR, SLASH, VALUE, LPAREN, RPAREN,\
+    IF_KEYWORD, ENDIF_KEYWORD, WHILE_KEYWORD, ENDWHILE_KEYWORD, LESS_THAN,\
+    GREATER_THAN
 from compiler.ast import VarDefinition, Identifier, Print, Input, Assignment,\
-    Expression, Term, Constant
+    Expression, Term, Constant, IfEnd, WhileEnd, IfStart, WhileStart
     
 
 class ParseError(Exception): pass
@@ -58,6 +60,19 @@ class Parser(object):
             self.ast.append(self.var_defintion())
         elif self.accept(IDENTIFIER):
             self.ast.append(self.assignment())
+            
+        # if
+        elif self.accept(IF_KEYWORD):
+            self.ast.append(self.if_start())
+        elif self.accept(ENDIF_KEYWORD):
+            self.ast.append(IfEnd())
+        
+        # while
+        elif self.accept(WHILE_KEYWORD):
+            self.ast.append(self.while_start())
+        elif self.accept(ENDWHILE_KEYWORD):
+            self.ast.append(WhileEnd())
+            
         else:
             raise ParseError('Error parsing line')
         
@@ -81,6 +96,26 @@ class Parser(object):
         self.expect(IDENTIFIER)
         i = Input()
         i.identifier = Identifier(self.get_value())
+        return i
+    
+    def if_start(self):
+        i = IfStart()
+        i.expression1 = self.expression()
+        if self.accept(LESS_THAN):
+            i.compare_op = '<'
+        elif self.accept(GREATER_THAN):
+            i.compare_op = '>'
+        i.expression2 = self.expression()
+        return i
+    
+    def while_start(self):
+        i = WhileStart()
+        i.expression1 = self.expression()
+        if self.accept(LESS_THAN):
+            i.compare_op = '<'
+        elif self.accept(GREATER_THAN):
+            i.compare_op = '>'
+        i.expression2 = self.expression()
         return i
     
     def assignment(self):

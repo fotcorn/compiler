@@ -1,5 +1,5 @@
-# var x = -1
-# print x
+var i = 0
+
 
 # input a
 # input b
@@ -12,4 +12,11 @@ print (5+5)*5
 print 5+(5*5)   # parents test
 
 #if a == 5:
-#    test
+#    
+test
+
+while i < 10
+    i = i + 1
+    print i
+endwhile
+
