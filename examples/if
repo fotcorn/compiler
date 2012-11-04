@@ -1,0 +1,10 @@
+input a
+
+
+if a < 0
+	print -1
+endif
+
+if a > 0
+	print 1
+endif

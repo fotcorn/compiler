@@ -5,7 +5,7 @@ from compiler.parser import Parser
 from compiler.interpreter import Interpreter
 #from compiler.symbols import TOKENS
 
-f = open('../examples/fib', 'r')
+f = open('../examples/if', 'r')
 code = f.read()
 f.close()
 

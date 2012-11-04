@@ -1,5 +1,5 @@
 from compiler.ast import VarDefinition, Identifier, Assignment, Input, Print,\
-    Constant, Expression, WhileStart, WhileEnd
+    Constant, Expression, WhileStart, WhileEnd, IfStart, IfEnd
 
 class InterpreterError(Exception): pass
 
@@ -70,6 +70,28 @@ class Interpreter():
                     if i < 0:
                         raise InterpreterError('endwhile without while')
                 ip = i - 1
+            
+            # if
+            elif isinstance(instr, IfStart):
+                if not self.comparision(instr.expression1, instr.expression2, instr.compare_op):
+                    i = ip + 1
+                    stack = 0
+                    while True:
+                        if isinstance(ast[i], IfEnd):
+                            if stack == 0:
+                                break
+                            else:
+                                stack -= 1
+                        elif isinstance(ast[i], IfStart):
+                            stack += 1
+                        i += 1
+                        if i == len(ast):
+                            raise InterpreterError('if start is last instruction in program')
+                    ip = i
+            elif isinstance(instr, IfEnd):
+                pass
+            else:
+                raise InterpreterError('Unknown instruction')
             
             ip += 1
             
