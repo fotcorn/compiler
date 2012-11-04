@@ -12,7 +12,7 @@ class CalculationTests(unittest.TestCase):
         ast =  parser.parse(tokens)
         interpreter = Interpreter()
         interpreter.interpret(ast)
-        return interpreter.vars['i']
+        self.assertEqual(interpreter.vars['i'], expected)
     
     # brackets
     def test_brackets_unclosed(self):
@@ -31,21 +31,24 @@ class CalculationTests(unittest.TestCase):
     
     # calculations
     def test_calculate_minus1(self):
-        self.interpret_calculation('print 100 - 10', 90)
+        self.interpret_calculation('100 - 10', 90)
     
     def test_calculate_minus2(self):
-        self.interpret_calculation('print (100 - 10)', 90)
+        self.interpret_calculation('(100 - 10)', 90)
     
     def test_calculate_minus3(self):
-        self.interpret_calculation('print (100 - 10) * 5', 450)
+        self.interpret_calculation('(100 - 10) * 5', 450)
     
     def test_calculate_plus(self):
-        self.interpret_calculation('print (100 + 10) * 5', 550)
+        self.interpret_calculation('(100 + 10) * 5', 550)
     
     def test_calculate_minus_minus(self):
         self.interpret_calculation('10 - - 5', 15)
     
-    def test_calculate_minus_plus(self):
+    def test_calculate_minus_plus1(self):
+        self.interpret_calculation('- + 5', -5)
+    
+    def test_calculate_minus_plus2(self):
         self.interpret_calculation('10 - + 5', 5)
     
     def test_calculate_plus_plus(self):

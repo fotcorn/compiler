@@ -93,11 +93,17 @@ class Parser(object):
     def expression(self):
         exp = Expression()
         sign = '+'
-        if self.get_symbol() == PLUS:
-            self.next_symbol()
-        elif self.get_symbol() == MINUS:
-            sign = '-'
-            self.next_symbol()
+        while True:
+            if self.get_symbol() == PLUS:
+                self.next_symbol()
+            elif self.get_symbol() == MINUS:
+                if sign == '+':
+                    sign = '-'
+                else:
+                    sign = '+'
+                self.next_symbol()
+            else:
+                break
         
         term = self.term()
         term.sign = sign
@@ -105,18 +111,24 @@ class Parser(object):
         exp.terms.append(term)
         
         while True:
-            if self.get_symbol() == PLUS:
-                sign = '+'
-            elif self.get_symbol() == MINUS:
-                sign = '-'
-            else:
-                break
+            sign = '+'
+            while True:
+                if self.get_symbol() == PLUS:
+                    pass
+                elif self.get_symbol() == MINUS:
+                    if sign == '+':
+                        sign = '-'
+                    else:
+                        sign = '+'
+                elif self.get_symbol() == VALUE or self.get_symbol() == IDENTIFIER or self.get_symbol() == LPAREN:
+                    break
+                else:
+                    return exp
+                self.next_symbol()
 
-            self.next_symbol()
             term = self.term()
             term.sign = sign
             exp.terms.append(term)
-        return exp
     
     def term(self):
         term = Term()
