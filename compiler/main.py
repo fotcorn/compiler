@@ -3,9 +3,10 @@
 from compiler.tokenizer import Tokenizer
 from compiler.parser import Parser
 from compiler.interpreter import Interpreter
+from compiler.code_generator import CodeGenerator
 #from compiler.symbols import TOKENS
 
-f = open('../examples/if', 'r')
+f = open('../examples/calculations', 'r')
 code = f.read()
 f.close()
 
@@ -29,6 +30,10 @@ ast = parser.parse(tokens)
 for a in ast:
     print a
 """
-
+"""
 interpreter = Interpreter()
 interpreter.interpret(ast)
+"""
+
+code_generator = CodeGenerator()
+print code_generator.generate(ast)
