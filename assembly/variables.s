@@ -11,34 +11,27 @@ main:
 	.cfi_offset 6, -16
 	mov	rbp, rsp
 	.cfi_def_cfa_register 6
-	mov	DWORD PTR [rbp-20], 11
-	mov	DWORD PTR [rbp-16], 22
-	mov	DWORD PTR [rbp-12], 33
-	mov	DWORD PTR [rbp-8], 44
-	mov	eax, DWORD PTR [rbp-8]
-	add	eax, 31
-	mov	edx, eax
-	sal	edx, 5
-	mov	eax, DWORD PTR [rbp-20]
-	add	eax, 12
-	imul	eax, edx
-	mov	edx, eax
-	add	edx, DWORD PTR [rbp-12]
-	mov	eax, edx
-	sal	eax, 5
-	add	edx, eax
-	mov	eax, DWORD PTR [rbp-16]
-	add	eax, 15
-	imul	eax, edx
-	add	eax, DWORD PTR [rbp-16]
-	add	eax, eax
-	mov	edx, eax
-	sal	edx, 4
-	add	edx, eax
+	mov	DWORD PTR [rbp-28], 66
+	mov	DWORD PTR [rbp-24], 55
+	mov	DWORD PTR [rbp-20], 44
+	mov	DWORD PTR [rbp-16], 33
+	mov	DWORD PTR [rbp-12], 22
+	mov	DWORD PTR [rbp-8], 11
 	mov	eax, DWORD PTR [rbp-12]
-	add	eax, 23
+	mov	edx, DWORD PTR [rbp-8]
+	add	eax, edx
+	mov	edx, eax
+	add	edx, DWORD PTR [rbp-16]
+	mov	eax, DWORD PTR [rbp-24]
+	mov	ecx, DWORD PTR [rbp-20]
+	add	eax, ecx
+	add	eax, DWORD PTR [rbp-28]
+	imul	edx, eax
+	mov	eax, DWORD PTR [rbp-12]
+	mov	ecx, DWORD PTR [rbp-8]
+	add	eax, ecx
+	add	eax, DWORD PTR [rbp-16]
 	imul	eax, edx
-	add	eax, DWORD PTR [rbp-20]
 	mov	DWORD PTR [rbp-4], eax
 	mov	eax, DWORD PTR [rbp-4]
 	pop	rbp
@@ -47,5 +40,5 @@ main:
 	.cfi_endproc
 .LFE0:
 	.size	main, .-main
-	.ident	"GCC: (Ubuntu/Linaro 4.6.1-9ubuntu3) 4.6.1"
+	.ident	"GCC: (Ubuntu/Linaro 4.6.3-1ubuntu5) 4.6.3"
 	.section	.note.GNU-stack,"",@progbits
