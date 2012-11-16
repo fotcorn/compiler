@@ -11,34 +11,39 @@ main:
 	.cfi_offset 6, -16
 	mov	rbp, rsp
 	.cfi_def_cfa_register 6
-	mov	DWORD PTR [rbp-20], 11
-	mov	DWORD PTR [rbp-16], 22
-	mov	DWORD PTR [rbp-12], 33
-	mov	DWORD PTR [rbp-8], 44
-	mov	eax, DWORD PTR [rbp-8]
-	add	eax, 31
+	mov	DWORD PTR [rbp-24], 55
+	mov	DWORD PTR [rbp-20], 44
+	mov	DWORD PTR [rbp-16], 33
+	mov	DWORD PTR [rbp-12], 22
+	mov	DWORD PTR [rbp-8], 11
+	mov	eax, 29
 	mov	edx, eax
-	sal	edx, 5
-	mov	eax, DWORD PTR [rbp-20]
-	add	eax, 12
-	imul	eax, edx
+	sar	edx, 31
+	idiv	DWORD PTR [rbp-8]
+	mov	ecx, eax
+	mov	eax, 29
 	mov	edx, eax
-	add	edx, DWORD PTR [rbp-12]
-	mov	eax, edx
-	sal	eax, 5
-	add	edx, eax
-	mov	eax, DWORD PTR [rbp-16]
-	add	eax, 15
-	imul	eax, edx
-	add	eax, DWORD PTR [rbp-16]
-	add	eax, eax
+	sar	edx, 31
+	idiv	DWORD PTR [rbp-12]
+	mov	esi, eax
+	mov	eax, 29
 	mov	edx, eax
-	sal	edx, 4
-	add	edx, eax
-	mov	eax, DWORD PTR [rbp-12]
-	add	eax, 23
-	imul	eax, edx
-	add	eax, DWORD PTR [rbp-20]
+	sar	edx, 31
+	idiv	DWORD PTR [rbp-16]
+	mov	edi, eax
+	mov	eax, 29
+	mov	edx, eax
+	sar	edx, 31
+	idiv	DWORD PTR [rbp-20]
+	mov	r8d, eax
+	mov	eax, 29
+	mov	edx, eax
+	sar	edx, 31
+	idiv	DWORD PTR [rbp-24]
+	imul	eax, r8d
+	imul	eax, edi
+	imul	eax, esi
+	imul	eax, ecx
 	mov	DWORD PTR [rbp-4], eax
 	mov	eax, DWORD PTR [rbp-4]
 	pop	rbp
