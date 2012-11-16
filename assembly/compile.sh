@@ -1,2 +1,2 @@
-nasm -f elf64 print.asm
-gcc -o print print.o
+nasm -f elf64 test.asm
+gcc -o test test.o
