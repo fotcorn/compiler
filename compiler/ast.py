@@ -11,6 +11,9 @@ class ASTNode(object):
         return ret
     def __repr__(self):
         return self.__str__()
+    
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
         
 
 class Print(ASTNode): pass

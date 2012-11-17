@@ -4,6 +4,7 @@ from compiler.tokenizer import Tokenizer
 from compiler.parser import Parser
 from compiler.interpreter import Interpreter
 from compiler.code_generator import CodeGenerator
+from compiler.optimizer import Optimizer
 #from compiler.symbols import TOKENS
 
 f = open('../examples/calculations', 'r')
@@ -34,6 +35,10 @@ for a in ast:
 interpreter = Interpreter()
 interpreter.interpret(ast)
 """
+
+optimizer = Optimizer()
+optimizer.optimize(ast)
+
 
 code_generator = CodeGenerator()
 print code_generator.generate(ast)
