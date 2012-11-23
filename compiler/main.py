@@ -1,4 +1,4 @@
-#import sys
+import os
 
 from compiler.tokenizer import Tokenizer
 from compiler.parser import Parser
@@ -41,4 +41,14 @@ optimizer.optimize(ast)
 
 
 code_generator = CodeGenerator()
-print code_generator.generate(ast)
+code =  code_generator.generate(ast)
+
+f = open('out.asm', 'w')
+f.write(code)
+f.close()
+os.system('nasm -f elf64 out.asm -o out.o')
+os.system('gcc out.o -o out')
+os.system('./out')
+
+
+
