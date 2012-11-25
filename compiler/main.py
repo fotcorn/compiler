@@ -7,7 +7,7 @@ from compiler.code_generator import CodeGenerator
 from compiler.optimizer import Optimizer
 #from compiler.symbols import TOKENS
 
-f = open('../examples/calculations', 'r')
+f = open('../examples/vars', 'r')
 code = f.read()
 f.close()
 
