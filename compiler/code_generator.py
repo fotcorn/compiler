@@ -47,33 +47,45 @@ class CodeGenerator():
         temp_reg = self.temp_regs.pop()
         
         for i, term in enumerate(expression.terms):
-            self.term(term)
+            term_reg = self.term(term)
             if i == 0:
-                self.add('mov %s, rax' % temp_reg)
+                self.add('mov %s, %s' % (temp_reg, term_reg))
             elif term.sign == '+':
-                self.add('add %s, rax' % temp_reg)
+                self.add('add %s, %s' % (temp_reg, term_reg))
             elif term.sign == '-':
-                self.add('sub %s, rax' % temp_reg)
+                self.add('sub %s, %s' % (temp_reg, term_reg))
         return temp_reg
         
     def term(self, term):
+        temp_reg = self.temp_regs.pop()
         for i, factor in enumerate(term.factors):
             if isinstance(factor, Constant):
                 if i == 0:
-                    self.add('mov rax, %s' % factor.constant)
+                    self.add('mov %s, %s' % (temp_reg, factor.constant))
                 elif factor.sign == '*':
                     self.add('mov rdx, %s' % factor.constant)
-                    self.add('imul rax, rdx')
+                    self.add('imul %s, rdx' % temp_reg)
                 elif factor.sign == '/':
+                    self.add('mov rax, %s' % temp_reg)
                     self.add('xor rdx, rdx')
                     self.add('mov rbx, %s' % factor.constant)
                     self.add('idiv rbx')
+                    self.add('mov %s, rax' % temp_reg)
                 else:
                     raise CodeGeneratorError('Error in term generation')
             elif isinstance(factor, Identifier):
                 pass
             elif isinstance(factor, Expression):
-                temp_reg = self.expression(factor)
-                self.add('mov rax, %s' % temp_reg)
-            
-            
+                expr_reg = self.expression(factor)
+                if i == 0:
+                    self.add('mov %s, %s' % (temp_reg, expr_reg))
+                elif factor.sign == "*":
+                    self.add('mov rdx, %s' % expr_reg)
+                    self.add('imul %s, rdx' % temp_reg)
+                elif factor.sign == '/':
+                    self.add('xor rdx, rdx')
+                    self.add('mov rbx, %s' % expr_reg)
+                    self.add('idiv rbx')
+                    self.add('mov %s, rax' % temp_reg)
+        return temp_reg
+
