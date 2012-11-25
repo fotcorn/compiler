@@ -1,7 +1,7 @@
 from compiler.ast import Print, Constant, Identifier, Expression, VarDefinition,\
     Assignment, Input, IfEnd, IfStart, WhileEnd, WhileStart
 
-class CodeGeneratorError():
+class CodeGeneratorError(Exception):
     pass
 
 class CodeGenerator():
@@ -44,7 +44,7 @@ class CodeGenerator():
                 identifier = instr.identifier.identifier
                 
                 if identifier in self.current_scope:
-                    raise CodeGeneratorError('variable %s already definded', identifier)
+                    raise CodeGeneratorError('variable %s already definded' % identifier)
                 
                 # mov [rbp-8], 5
                 stack_position = (len(self.current_scope) + 1)  * 8
@@ -60,7 +60,7 @@ class CodeGenerator():
                 try:
                     stack_position = self.current_scope[identifier]
                 except KeyError:
-                    raise CodeGeneratorError('variable %s not declared', identifier)
+                    raise CodeGeneratorError('variable %s not declared' % identifier)
                 temp_reg = self.expression(instr.expression, True)
                 self.add('mov qword [rbp-%s], %s' % (stack_position, temp_reg))
                 
@@ -109,7 +109,7 @@ class CodeGenerator():
                 try:
                     stack_position = self.current_scope[factor.identifier]
                 except KeyError:
-                    raise CodeGeneratorError('use of undefined variable %s', factor.identifier)
+                    raise CodeGeneratorError('use of undefined variable %s' % factor.identifier)
                 source = 'qword [rbp-%s]' % stack_position
             elif isinstance(factor, Expression):
                 source = self.expression(factor)

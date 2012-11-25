@@ -1,10 +1,10 @@
 from compiler.ast import VarDefinition, Identifier, Assignment, Input, Print,\
     Constant, Expression, WhileStart, WhileEnd, IfStart, IfEnd
 
-class InterpreterError(Exception): pass
+class InterpreterError(Exception):
+    pass
 
 class Interpreter():
-    
     
     def interpret(self, ast):
         self.vars = {}
