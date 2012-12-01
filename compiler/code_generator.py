@@ -15,7 +15,7 @@ class CodeGenerator():
         self.add('extern printf') # define external function
         self.add('global main') # export symbol main
         self.add('SECTION .data') # start of static data section
-        self.add('print_format_str: db "%d", 10, 0') # save printf format string for integers "%d\n\0"
+        self.add('print_format_str: db "%lld", 10, 0') # save printf format string for integers "%d\n\0"
         self.add('SECTION .text') # start of program code section
         self.add('main:') # main label
         self.add('push rbp') # push old base pointer
