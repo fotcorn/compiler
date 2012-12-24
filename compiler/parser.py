@@ -10,10 +10,9 @@
 from compiler.symbols import PRINT_KEYWORD, INPUT_KEYWORD, VAR_KEYWORD,\
     IDENTIFIER, EQUALS, PLUS, MINUS, STAR, SLASH, VALUE, LPAREN, RPAREN,\
     IF_KEYWORD, ENDIF_KEYWORD, WHILE_KEYWORD, ENDWHILE_KEYWORD, LESS_THAN,\
-    GREATER_THAN
-from compiler.ast import VarDefinition, Identifier, Print, Input, Assignment,\
-    Expression, Term, Constant, IfEnd, WhileEnd, IfStart, WhileStart
+    GREATER_THAN, print_line
     
+from compiler.ast import Node, NumberLeaf
 
 class ParseError(Exception): pass
 
@@ -23,175 +22,38 @@ class Parser(object):
         self.ast = []
         for token in tokens:
             self.current_line = token
-            self.current_pos = 0
-            self.line()
-        return self.ast
-    
-    def accept(self, symbol):
-        if self.current_pos < len(self.current_line) and self.current_line[self.current_pos][0] == symbol:
-            self.current_pos += 1
-            return True
-        else:
-            return False
-    
-    def expect(self, symbol):
-        if self.accept(symbol):
-            return True
-        else:
-            raise ParseError('Excepted Symbol')
-        
-    def get_value(self):
-        return self.current_line[self.current_pos-1][1]
-    
-    def get_symbol(self):
-        if self.current_pos >= len(self.current_line):
-            return None
-        return self.current_line[self.current_pos][0]
-    
-    def next_symbol(self):
-        self.current_pos += 1
-    
-    def line(self):
-        if self.accept(PRINT_KEYWORD):
-            self.ast.append(self.print_call())
-        elif self.accept(INPUT_KEYWORD):
-            self.ast.append(self.input_call())
-        elif self.accept(VAR_KEYWORD):
-            self.ast.append(self.var_defintion())
-        elif self.accept(IDENTIFIER):
-            self.ast.append(self.assignment())
             
-        # if
-        elif self.accept(IF_KEYWORD):
-            self.ast.append(self.if_start())
-        elif self.accept(ENDIF_KEYWORD):
-            self.ast.append(IfEnd())
-        
-        # while
-        elif self.accept(WHILE_KEYWORD):
-            self.ast.append(self.while_start())
-        elif self.accept(ENDWHILE_KEYWORD):
-            self.ast.append(WhileEnd())
-            
-        else:
-            raise ParseError('Error parsing line')
-        
-        if len(self.current_line) != self.current_pos:
-            raise ParseError('Not all tokens parsed')
+            if self.current_line[0][0] == PRINT_KEYWORD:
+                self.expression()
+                print self.node
+                
     
-    def var_defintion(self):
-        self.expect(IDENTIFIER)
-        vd = VarDefinition()
-        vd.identifier = Identifier(self.get_value())
-        if self.accept(EQUALS):
-            vd.expression = self.expression()
-        return vd
-    
-    def print_call(self):
-        p = Print()
-        p.expression = self.expression()
-        return p
-        
-    def input_call(self):
-        self.expect(IDENTIFIER)
-        i = Input()
-        i.identifier = Identifier(self.get_value())
-        return i
-    
-    def if_start(self):
-        i = IfStart()
-        i.expression1 = self.expression()
-        if self.accept(LESS_THAN):
-            i.compare_op = '<'
-        elif self.accept(GREATER_THAN):
-            i.compare_op = '>'
-        i.expression2 = self.expression()
-        return i
-    
-    def while_start(self):
-        i = WhileStart()
-        i.expression1 = self.expression()
-        if self.accept(LESS_THAN):
-            i.compare_op = '<'
-        elif self.accept(GREATER_THAN):
-            i.compare_op = '>'
-        i.expression2 = self.expression()
-        return i
-    
-    def assignment(self):
-        a = Assignment()
-        a.identifier = Identifier(self.get_value())
-        self.expect(EQUALS)
-        a.expression = self.expression()
-        return a
-        
     def expression(self):
-        exp = Expression()
-        sign = '+'
-        while True:
-            if self.get_symbol() == PLUS:
-                self.next_symbol()
-            elif self.get_symbol() == MINUS:
-                if sign == '+':
-                    sign = '-'
+        self.node = Node()
+        for i in range(1, len(self.current_line)):
+            token = self.current_line[i]
+            if token[0] == VALUE:
+                if self.node.left_child == None:
+                    self.node.left_child = NumberLeaf(parent=self.node, value=token[1])
+                elif self.node.right_child == None:
+                    self.node.right_child = NumberLeaf(parent=self.node, value=token[1])
                 else:
-                    sign = '+'
-                self.next_symbol()
-            else:
-                break
-        
-        term = self.term()
-        term.sign = sign
-        
-        exp.terms.append(term)
-        
-        while True:
-            sign = '+'
-            while True:
-                if self.get_symbol() == PLUS:
-                    pass
-                elif self.get_symbol() == MINUS:
-                    if sign == '+':
-                        sign = '-'
-                    else:
-                        sign = '+'
-                elif self.get_symbol() == VALUE or self.get_symbol() == IDENTIFIER or self.get_symbol() == LPAREN:
-                    break
-                else:
-                    return exp
-                self.next_symbol()
-
-            term = self.term()
-            term.sign = sign
-            exp.terms.append(term)
+                    raise ParseError('both child already contain a value')
+            elif token[0] == PLUS:
+                self.set_operator('+')
+            elif token[0] == STAR:
+                self.set_operator('*')
     
-    def term(self):
-        term = Term()
-        factor = self.factor()
-        term.factors.append(factor)
-        
-        while True:
-            if self.get_symbol() == STAR:
-                sign = '*'
-            elif self.get_symbol() == SLASH:
-                sign = '/'
-            else:
-                break
-            self.next_symbol()
-            factor = self.factor()
-            factor.sign = sign
-            term.factors.append(factor)
-        return term
-    
-    def factor(self):
-        if self.accept(VALUE):
-            return Constant(self.get_value())
-        elif self.accept(IDENTIFIER):
-            return Identifier(self.get_value())
-        elif self.accept(LPAREN):
-            exp = self.expression()
-            self.expect(RPAREN)
-            return exp
+    def set_operator(self, operator):
+        if self.node.operator == None:
+            self.node.operator = operator
         else:
-            raise ParseError('Error: bad factor')
+            new_node = Node(parent=self.node, operator=operator)
+            new_node.left_child = self.node
+            self.node = new_node
+            
+            
+
+
+
 

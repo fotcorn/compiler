@@ -1,3 +1,5 @@
+import sys
+
 VAR_KEYWORD = 1
 PRINT_KEYWORD = 2
 INPUT_KEYWORD = 3
@@ -42,3 +44,13 @@ TOKENS = {
     17: 'IF_KEYWORD',
     18: 'ENDIF_KEYWORD',
 }
+
+def print_line(line):
+    for token in line:
+        if len(token) == 2:
+            sys.stdout.write('%s ' % token[1])
+        else:
+            sys.stdout.write('%s ' % TOKENS[token[0]])
+    sys.stdout.write('\n')
+    
+    

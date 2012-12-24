@@ -1,43 +1,20 @@
 
-class ASTNode(object):
-    def __str__(self):
-        ret = '<' + self.__class__.__name__ + ': '
-        for name, value in self.__dict__.items():
-            if isinstance(value, basestring):
-                ret += name + "='" + str(value) + "', "
-            else:
-                ret += name + '=' + str(value) + ', '
-        ret = ret[:-2] + '>'
-        return ret
-    def __repr__(self):
-        return self.__str__()
-    
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-        
-
-class Print(ASTNode): pass
-class Input(ASTNode): pass
-class VarDefinition(ASTNode): pass
-class Assignment(ASTNode): pass
-class WhileStart(ASTNode): pass
-class WhileEnd(ASTNode): pass
-class IfStart(ASTNode): pass
-class IfEnd(ASTNode): pass
-
-class Constant(ASTNode):
-    def __init__(self, constant):
-        self.constant = constant
-    
-class Identifier(ASTNode):
-    def __init__(self, identifier):
-        self.identifier = identifier
-        
-class Term(ASTNode):
+class Print(object):
     def __init__(self):
-        self.factors = []
-        
-class Expression(ASTNode):
-    def __init__(self):
-        self.terms = []
+        self.expression = None
 
+class Leaf(object):
+    def __init__(self, parent):
+        self.parent = parent
+
+class NumberLeaf(Leaf):
+    def __init__(self, parent=None, value=None):
+        super(NumberLeaf, self).__init__(parent)
+        self.value = value
+
+class Node(object):
+    def __init__(self, parent=None, operator=None):
+        self.parent = parent
+        self.operator = operator
+        self.left_child = None
+        self.right_child = None

@@ -2,9 +2,9 @@ import os
 
 from compiler.tokenizer import Tokenizer
 from compiler.parser import Parser
-from compiler.interpreter import Interpreter
-from compiler.code_generator import CodeGenerator
-from compiler.optimizer import Optimizer
+#from compiler.interpreter import Interpreter
+#from compiler.code_generator import CodeGenerator
+#from compiler.optimizer import Optimizer
 #from compiler.symbols import TOKENS
 
 f = open('../examples/vars', 'r')
@@ -35,7 +35,7 @@ for a in ast:
 interpreter = Interpreter()
 interpreter.interpret(ast)
 """
-
+"""
 optimizer = Optimizer()
 optimizer.optimize(ast)
 
@@ -50,5 +50,5 @@ os.system('nasm -f elf64 out.asm -o out.o')
 os.system('gcc out.o -o out')
 os.system('./out')
 
-
+"""
 
